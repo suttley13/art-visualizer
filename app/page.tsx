@@ -68,7 +68,7 @@ export default function Home() {
           {/* Upload Section */}
           {!selectedImage ? (
             <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-12 text-center">
-              <label htmlFor="image-upload" className="cursor-pointer">
+              <label htmlFor="image-upload" className="cursor-pointer block">
                 <div className="space-y-4">
                   <div className="text-6xl">📸</div>
                   <div>
@@ -79,19 +79,19 @@ export default function Home() {
                       Take or select a photo of a wall in your home
                     </p>
                   </div>
-                  <button className="bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-8 rounded-full transition-colors">
+                  <div className="bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-8 rounded-full transition-colors inline-block">
                     Choose Photo
-                  </button>
+                  </div>
                 </div>
-                <input
-                  id="image-upload"
-                  type="file"
-                  accept="image/*"
-                  capture="environment"
-                  onChange={handleImageUpload}
-                  className="hidden"
-                />
               </label>
+              <input
+                id="image-upload"
+                type="file"
+                accept="image/*"
+                capture="environment"
+                onChange={handleImageUpload}
+                className="hidden"
+              />
             </div>
           ) : (
             <div className="space-y-4">
