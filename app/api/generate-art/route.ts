@@ -72,6 +72,10 @@ Generate a photorealistic image showing how this room would look with the artwor
     });
 
     // Extract the generated image from the response
+    if (!response.candidates || response.candidates.length === 0) {
+      throw new Error('No candidates in response');
+    }
+
     for (const part of response.candidates[0].content.parts) {
       if (part.inlineData) {
         const generatedImageData = part.inlineData.data;
