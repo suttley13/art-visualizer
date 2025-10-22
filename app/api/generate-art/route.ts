@@ -76,7 +76,12 @@ Generate a photorealistic image showing how this room would look with the artwor
       throw new Error('No candidates in response');
     }
 
-    for (const part of response.candidates[0].content.parts) {
+    const candidate = response.candidates[0];
+    if (!candidate.content || !candidate.content.parts) {
+      throw new Error('No content or parts in candidate');
+    }
+
+    for (const part of candidate.content.parts) {
       if (part.inlineData) {
         const generatedImageData = part.inlineData.data;
         const generatedMimeType = part.inlineData.mimeType;
