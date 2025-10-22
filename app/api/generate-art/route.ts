@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenAI } from '@google/genai';
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Initialize Gemini
+    // Initialize Gemini with the new SDK
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       return NextResponse.json(
@@ -21,92 +21,72 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const genAI = new GoogleGenerativeAI(apiKey);
+    const ai = new GoogleGenAI({ apiKey });
 
-    // Use Gemini Pro Vision for image understanding
-    const visionModel = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
-
-    // Convert base64 image to the format Gemini expects
+    // Convert base64 image to the format required
     const imageData = image.replace(/^data:image\/\w+;base64,/, '');
     const mimeType = image.match(/^data:(image\/\w+);base64,/)?.[1] || 'image/jpeg';
 
-    // Create art type descriptions
+    // Create detailed art descriptions for different types
     const artDescriptions: Record<string, string> = {
-      painting: 'a beautiful framed painting with an ornate frame',
-      photograph: 'a framed photograph with a modern sleek frame',
-      sculpture: 'an elegant wall-mounted sculpture with interesting shadows',
-      gallery_wall: 'a curated gallery wall with multiple framed artworks of various sizes',
-      abstract_art: 'a vibrant abstract art piece with bold colors and geometric shapes',
-      canvas_print: 'a large canvas print with contemporary artwork',
+      painting: 'a beautiful, high-quality framed painting with an elegant ornate gold frame. The painting should be a tasteful landscape or abstract artwork with rich colors that complement the room',
+      photograph: 'a professionally framed photograph with a modern, sleek black frame. The photograph should be a striking artistic photo (landscape, cityscape, or artistic portrait) that fits the room\'s aesthetic',
+      sculpture: 'an elegant three-dimensional wall-mounted sculpture with interesting textures and shadows. The sculpture should be modern and artistic, creating visual interest on the wall',
+      gallery_wall: 'a professionally curated gallery wall featuring 5-7 framed artworks of various sizes arranged in an aesthetically pleasing pattern. The frames should be a mix of styles and the artwork should be cohesive',
+      abstract_art: 'a large, vibrant abstract art piece with bold colors, dynamic brushstrokes, and geometric or organic shapes that create visual energy. The piece should be properly framed or on canvas',
+      canvas_print: 'a large stretched canvas print featuring contemporary artwork with modern styling. The canvas should be frameless with gallery-wrapped edges, showing a striking image that complements the space',
     };
 
     const artDescription = artDescriptions[artType] || artDescriptions.painting;
 
-    // Step 1: Analyze the room
-    const analysisPrompt = `Analyze this room image and describe:
-1. The wall color, texture, and lighting
-2. The room style and aesthetic (modern, traditional, minimalist, etc.)
-3. Available wall space and where art could be placed
-4. The perspective and camera angle
-5. Existing colors and decor elements
-
-Be specific and concise.`;
-
-    const analysisResult = await visionModel.generateContent([
-      analysisPrompt,
+    // Create the prompt for image editing using Gemini 2.5 Flash Image
+    const prompt = [
       {
         inlineData: {
-          data: imageData,
           mimeType: mimeType,
+          data: imageData,
         },
       },
-    ]);
+      {
+        text: `Using the provided image of a room, please add ${artDescription} to the wall.
 
-    const roomAnalysis = analysisResult.response.text();
+The artwork should:
+- Be placed on the most prominent wall visible in the image
+- Have realistic perspective and proportions that match the room's geometry
+- Include proper lighting and shadows that match the existing room lighting
+- Be properly sized for the space (not too large or too small - approximately proportional to the wall space)
+- Look professionally installed and naturally integrated into the room
+- Maintain all other elements of the room exactly as they appear in the original image
 
-    // Step 2: Generate description for image generation
-    const imageGenPrompt = `Based on this room analysis:
-${roomAnalysis}
+Generate a photorealistic image showing how this room would look with the artwork installed. The result should look like a professional interior design visualization.`
+      },
+    ];
 
-Create a detailed prompt to generate an image of the same room but with ${artDescription} added to the wall. The prompt should describe:
-1. The exact room as it appears in the original image (walls, furniture, lighting, colors)
-2. The artwork placed naturally on the wall with realistic perspective
-3. Proper shadows and lighting that match the room
-4. The same camera angle and composition
-
-Make the prompt detailed and photorealistic. Start the prompt with "A photograph of" and make it one continuous description.`;
-
-    const promptResult = await visionModel.generateContent(imageGenPrompt);
-    const generationPrompt = promptResult.response.text();
-
-    // Step 3: Generate the new image using Imagen
-    const imagenModel = genAI.getGenerativeModel({ model: 'imagen-3.0-generate-001' });
-
-    const imageResult = await imagenModel.generateContent({
-      contents: [{
-        role: 'user',
-        parts: [{
-          text: generationPrompt
-        }]
-      }],
-      generationConfig: {
-        numberOfImages: 1,
-      }
+    // Use Gemini 2.5 Flash Image for native image editing
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash-image',
+      contents: prompt,
+      config: {
+        responseModalities: ['Image'],
+      },
     });
 
-    // Extract generated image
-    const generatedImageData = imageResult.response.candidates?.[0]?.content?.parts?.[0];
+    // Extract the generated image from the response
+    for (const part of response.candidates[0].content.parts) {
+      if (part.inlineData) {
+        const generatedImageData = part.inlineData.data;
+        const generatedMimeType = part.inlineData.mimeType;
+        const base64Image = `data:${generatedMimeType};base64,${generatedImageData}`;
 
-    if (generatedImageData && 'inlineData' in generatedImageData) {
-      const base64Image = `data:${generatedImageData.inlineData.mimeType};base64,${generatedImageData.inlineData.data}`;
-
-      return NextResponse.json({
-        success: true,
-        imageUrl: base64Image,
-      });
-    } else {
-      throw new Error('No image generated');
+        return NextResponse.json({
+          success: true,
+          imageUrl: base64Image,
+        });
+      }
     }
+
+    // If we get here, no image was found in the response
+    throw new Error('No image generated in response');
 
   } catch (error) {
     console.error('Error generating art:', error);

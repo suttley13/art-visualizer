@@ -161,7 +161,7 @@ export default function Home() {
 
         {/* Info Section */}
         <div className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
-          <p>Powered by Google Gemini AI</p>
+          <p>Powered by Gemini 2.5 Flash Image (Nano Banana)</p>
         </div>
       </main>
     </div>

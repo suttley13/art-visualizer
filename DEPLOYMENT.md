@@ -105,8 +105,20 @@ To deploy updates:
 - **Pro Plan:** $20/month for production apps
 - Gemini API usage charged separately by Google
 
+## Technical Details
+
+This app uses **Gemini 2.5 Flash Image** (also known as "Nano Banana"), Google's latest model with native image generation and editing capabilities. Unlike traditional text-to-image models, this model can:
+
+- Directly edit uploaded photos
+- Understand context and maintain perspective
+- Add objects naturally with realistic lighting and shadows
+- Preserve the original image fidelity
+
+All generated images include a SynthID watermark for responsible AI usage.
+
 ## Support
 
 - Railway Docs: https://docs.railway.app
 - Gemini API Docs: https://ai.google.dev/docs
+- Gemini Image Generation Guide: https://ai.google.dev/gemini-api/docs/image-generation
 - GitHub Issues: https://github.com/suttley13/art-visualizer/issues

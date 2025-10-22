@@ -13,7 +13,7 @@ A mobile-first web application that helps users visualize how artwork would look
 
 - **Framework:** Next.js 15 with TypeScript
 - **Styling:** Tailwind CSS
-- **AI:** Google Gemini (Gemini 2.0 Flash + Imagen 3.0)
+- **AI:** Google Gemini 2.5 Flash Image (Nano Banana) - Native image generation and editing
 - **Deployment:** Railway
 
 ## Getting Started
@@ -102,11 +102,16 @@ Your app will be live at the provided Railway URL!
 
 ## Architecture
 
-The app uses a three-step process:
+The app uses **Gemini 2.5 Flash Image** (aka "Nano Banana") for native image editing:
 
-1. **Image Analysis:** Gemini 2.0 Flash analyzes the uploaded room photo
-2. **Prompt Generation:** Creates a detailed description of the room with art added
-3. **Image Generation:** Imagen 3.0 generates a photorealistic image based on the description
+1. **Image Upload:** User uploads a photo of their room
+2. **Image Editing:** Gemini 2.5 Flash Image directly edits the photo to add artwork
+   - Uses advanced AI understanding to place art naturally on walls
+   - Maintains realistic perspective, lighting, and shadows
+   - Preserves the original room exactly as photographed
+3. **Result:** Returns a photorealistic visualization of the room with art added
+
+This approach provides superior results compared to traditional text-to-image generation because it uses the actual room photo as input and intelligently edits it, rather than trying to recreate the scene from scratch.
 
 ## License
 
