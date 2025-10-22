@@ -56,7 +56,7 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
       <main className="container mx-auto px-4 py-8 max-w-2xl">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 dark:text-white mb-2">
+          <h1 className="text-5xl font-extrabold bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent mb-2 tracking-tight">
             Art Visualizer
           </h1>
           <p className="text-gray-600 dark:text-gray-300">
@@ -72,11 +72,8 @@ export default function Home() {
                 <div className="space-y-4">
                   <div className="text-6xl">📸</div>
                   <div>
-                    <p className="text-lg font-medium text-gray-700 dark:text-gray-200">
+                    <p className="text-sm font-medium text-gray-700 dark:text-gray-200">
                       Upload a photo of your room
-                    </p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                      Take or select a photo of a wall in your home
                     </p>
                   </div>
                   <div className="shimmer-pulse bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-8 rounded-full transition-colors inline-block">
