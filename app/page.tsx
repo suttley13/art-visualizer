@@ -79,7 +79,7 @@ export default function Home() {
                       Take or select a photo of a wall in your home
                     </p>
                   </div>
-                  <div className="bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-8 rounded-full transition-colors inline-block">
+                  <div className="shimmer-pulse bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-8 rounded-full transition-colors inline-block">
                     Choose Photo
                   </div>
                 </div>
