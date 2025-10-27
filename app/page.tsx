@@ -53,7 +53,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 dark:bg-black">
       <main className="container mx-auto px-4 py-8 max-w-2xl">
         <div className="text-center mb-8">
           <h1 className="text-5xl font-extrabold bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent mb-2 tracking-tight">
